@@ -96,6 +96,8 @@ jobs:
 
           # Combine all tags
           ALL_TAGS="${DOCKERHUB_TAGS},${GHCR_TAGS}"
+          # Convert entire tag string to lowercase to satisfy Docker requirements (e.g. MortarHQ -> mortarhq)
+          ALL_TAGS=$(echo "${ALL_TAGS}" | tr '[:upper:]' '[:lower:]')
 
           echo "tags=${ALL_TAGS}" >> $GITHUB_OUTPUT
           echo "Generated tags: ${ALL_TAGS}"
