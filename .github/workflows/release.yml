@@ -14,7 +14,7 @@ on:
       mobile_run_id:
         description: 'The run id of EasyTier-Mobile Action in EasyTier repo'
         type: number
-        required: true
+        required: false
       version:
         description: 'Version for this release'
         type: string
@@ -54,6 +54,7 @@ jobs:
           path: release_assets_nozip
 
       - name: Download Mobile Artifact
+        if: ${{ inputs.mobile_run_id != 0 && inputs.mobile_run_id != '' }}
         uses: dawidd6/action-download-artifact@v11
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -66,6 +67,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           mkdir zipped_assets
+          mkdir -p release_assets_nozip
 
           find release_assets_nozip -type f -exec mv {} zipped_assets \;
           ls -l -R ./zipped_assets
