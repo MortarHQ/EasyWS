@@ -76,14 +76,14 @@ jobs:
           # GHCR_TAGS="ghcr.io/easytier/easytier:${{ inputs.image_tag }}"
           # Note: Docker Hub requires lowercase repository names (easyws)
           DOCKERHUB_TAGS="${{ secrets.DOCKERHUB_USERNAME }}/easyws:${{ inputs.image_tag }}"
-          GHCR_TAGS="ghcr.io/${{ github.repository_owner }}/easyws:${{ inputs.image_tag }}"
+          GHCR_TAGS="ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/easyws:${{ inputs.image_tag }}"
 
           # Add latest tags if requested
           if [[ "${{ inputs.mark_latest }}" == "true" ]]; then
             # DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:latest"
             # GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:latest"
             DOCKERHUB_TAGS="${DOCKERHUB_TAGS},${{ secrets.DOCKERHUB_USERNAME }}/easyws:latest"
-            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ github.repository_owner }}/easyws:latest"
+            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/easyws:latest"
           fi
 
           # Add unstable tags if requested
@@ -91,7 +91,7 @@ jobs:
             # DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:unstable"
             # GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:unstable"
             DOCKERHUB_TAGS="${DOCKERHUB_TAGS},${{ secrets.DOCKERHUB_USERNAME }}/easyws:unstable"
-            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ github.repository_owner }}/easyws:unstable"
+            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/easyws:unstable"
           fi
 
           # Combine all tags
