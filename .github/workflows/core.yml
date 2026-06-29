@@ -63,65 +63,65 @@ jobs:
           - TARGET: x86_64-unknown-linux-musl
             OS: ubuntu-24.04
             ARTIFACT_NAME: linux-x86_64
-          - TARGET: aarch64-unknown-linux-musl
-            OS: ubuntu-24.04-arm
-            ARTIFACT_NAME: linux-aarch64
-
-          - TARGET: riscv64gc-unknown-linux-musl
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-riscv64
-          - TARGET: loongarch64-unknown-linux-musl
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-loongarch64
-
-          - TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-armv7hf
-          - TARGET: armv7-unknown-linux-musleabi # raspberry pi 2-3-4, not tested
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-armv7
-          - TARGET: arm-unknown-linux-musleabihf # raspberry pi 0-1, not tested
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-armhf
-          - TARGET: arm-unknown-linux-musleabi # raspberry pi 0-1, not tested
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-arm
-
-          - TARGET: mips-unknown-linux-musl
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-mips
-          - TARGET: mipsel-unknown-linux-musl
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: linux-mipsel
-
-          - TARGET: x86_64-unknown-freebsd
-            OS: ubuntu-24.04
-            ARTIFACT_NAME: freebsd-13.2-x86_64
-            BSD_VERSION: 13.2
-
-          - TARGET: x86_64-apple-darwin
-            OS: macos-latest
-            ARTIFACT_NAME: macos-x86_64
-          - TARGET: aarch64-apple-darwin
-            OS: macos-latest
-            ARTIFACT_NAME: macos-aarch64
-
+#          - TARGET: aarch64-unknown-linux-musl
+#            OS: ubuntu-24.04-arm
+#            ARTIFACT_NAME: linux-aarch64
+#
+#          - TARGET: riscv64gc-unknown-linux-musl
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-riscv64
+#          - TARGET: loongarch64-unknown-linux-musl
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-loongarch64
+#
+#          - TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-armv7hf
+#          - TARGET: armv7-unknown-linux-musleabi # raspberry pi 2-3-4, not tested
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-armv7
+#          - TARGET: arm-unknown-linux-musleabihf # raspberry pi 0-1, not tested
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-armhf
+#          - TARGET: arm-unknown-linux-musleabi # raspberry pi 0-1, not tested
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-arm
+#
+#          - TARGET: mips-unknown-linux-musl
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-mips
+#          - TARGET: mipsel-unknown-linux-musl
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: linux-mipsel
+#
+#          - TARGET: x86_64-unknown-freebsd
+#            OS: ubuntu-24.04
+#            ARTIFACT_NAME: freebsd-13.2-x86_64
+#            BSD_VERSION: 13.2
+#
+#          - TARGET: x86_64-apple-darwin
+#            OS: macos-latest
+#            ARTIFACT_NAME: macos-x86_64
+#          - TARGET: aarch64-apple-darwin
+#            OS: macos-latest
+#            ARTIFACT_NAME: macos-aarch64
+#
           - TARGET: x86_64-pc-windows-msvc
             OS: windows-latest
             ARTIFACT_NAME: windows-x86_64
-          - TARGET: i686-pc-windows-msvc
-            OS: windows-latest
-            ARTIFACT_NAME: windows-i686
-          - TARGET: aarch64-pc-windows-msvc
-            OS: windows-11-arm
-            ARTIFACT_NAME: windows-arm64
+#          - TARGET: i686-pc-windows-msvc
+#            OS: windows-latest
+#            ARTIFACT_NAME: windows-i686
+#          - TARGET: aarch64-pc-windows-msvc
+#            OS: windows-11-arm
+#            ARTIFACT_NAME: windows-arm64
 
     runs-on: ${{ matrix.OS }}
     env:
       NAME: easytier
       TARGET: ${{ matrix.TARGET }}
       OS: ${{ matrix.OS }}
-      OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
+#      OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
     needs:
       - pre_job
       - build_web
@@ -257,43 +257,43 @@ jobs:
           path: |
             ./artifacts/*
 
-  build_magisk:
-    runs-on: ubuntu-latest
-    needs: [ pre_job, build_web, build ]
-    if: needs.pre_job.result == 'success' && needs.pre_job.outputs.should_skip != 'true' && !cancelled()
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5  # 必须先检出代码才能获取模块配置
-
-      # 下载二进制文件到独立目录
-      - name: Download Linux aarch64 binaries
-        uses: actions/download-artifact@v4
-        with:
-          name: easytier-linux-aarch64
-          path: ./downloaded-binaries/  # 独立目录避免冲突
-
-      # 将二进制文件复制到 Magisk 模块目录
-      - name: Prepare binaries
-        run: |
-          mkdir -p ./easytier-contrib/easytier-magisk/
-          cp ./downloaded-binaries/easytier-core ./easytier-contrib/easytier-magisk/
-          cp ./downloaded-binaries/easytier-cli ./easytier-contrib/easytier-magisk/
-          cp ./downloaded-binaries/easytier-web ./easytier-contrib/easytier-magisk/
-
-      # 上传生成的模块
-      - name: Upload Magisk Module
-        uses: actions/upload-artifact@v5
-        with:
-          name: Easytier-Magisk
-          path: |
-            ./easytier-contrib/easytier-magisk
-            !./easytier-contrib/easytier-magisk/build.sh
-            !./easytier-contrib/easytier-magisk/magisk_update.json
-          if-no-files-found: error
+#  build_magisk:
+#    runs-on: ubuntu-latest
+#    needs: [ pre_job, build_web, build ]
+#    if: needs.pre_job.result == 'success' && needs.pre_job.outputs.should_skip != 'true' && !cancelled()
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v5  # 必须先检出代码才能获取模块配置
+#
+#      # 下载二进制文件到独立目录
+#      - name: Download Linux aarch64 binaries
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: easytier-linux-aarch64
+#          path: ./downloaded-binaries/  # 独立目录避免冲突
+#
+#      # 将二进制文件复制到 Magisk 模块目录
+#      - name: Prepare binaries
+#        run: |
+#          mkdir -p ./easytier-contrib/easytier-magisk/
+#          cp ./downloaded-binaries/easytier-core ./easytier-contrib/easytier-magisk/
+#          cp ./downloaded-binaries/easytier-cli ./easytier-contrib/easytier-magisk/
+#          cp ./downloaded-binaries/easytier-web ./easytier-contrib/easytier-magisk/
+#
+#      # 上传生成的模块
+#      - name: Upload Magisk Module
+#        uses: actions/upload-artifact@v5
+#        with:
+#          name: Easytier-Magisk
+#          path: |
+#            ./easytier-contrib/easytier-magisk
+#            !./easytier-contrib/easytier-magisk/build.sh
+#            !./easytier-contrib/easytier-magisk/magisk_update.json
+#          if-no-files-found: error
 
   core-result:
     runs-on: ubuntu-latest
-    needs: [ pre_job, build_web, build, build_magisk ]
+    needs: [ pre_job, build_web, build ]
     if: needs.pre_job.result == 'success' && needs.pre_job.outputs.should_skip != 'true' && !cancelled()
     steps:
       - name: Mark result as failed
