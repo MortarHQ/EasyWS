@@ -6,7 +6,7 @@ on:
       run_id:
         description: 'The run id of EasyTier-Core Action in EasyTier repo'
         type: number
-        default: 10228239965
+        # default: 10228239965
         required: true
       image_tag:
         description: 'Tag for this image build'
@@ -26,7 +26,7 @@ on:
 
 jobs:
   docker:
-    if: contains('["KKRainbow"]', github.actor)
+    # if: contains('["KKRainbow"]', github.actor)
     runs-on: ubuntu-latest
     steps:
       -
@@ -63,7 +63,7 @@ jobs:
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           run_id: ${{ inputs.run_id }}
-          repo: EasyTier/EasyTier
+          repo: ${{ github.repository }} # EasyTier/EasyTier
           path: docker_context
       - name: List files
         run: |
@@ -72,19 +72,26 @@ jobs:
         id: tags
         run: |
           # Base tags with version
-          DOCKERHUB_TAGS="easytier/easytier:${{ inputs.image_tag }}"
-          GHCR_TAGS="ghcr.io/easytier/easytier:${{ inputs.image_tag }}"
+          # DOCKERHUB_TAGS="easytier/easytier:${{ inputs.image_tag }}"
+          # GHCR_TAGS="ghcr.io/easytier/easytier:${{ inputs.image_tag }}"
+          # Note: Docker Hub requires lowercase repository names (easyws)
+          DOCKERHUB_TAGS="${{ secrets.DOCKERHUB_USERNAME }}/easyws:${{ inputs.image_tag }}"
+          GHCR_TAGS="ghcr.io/${{ github.repository_owner }}/easyws:${{ inputs.image_tag }}"
 
           # Add latest tags if requested
           if [[ "${{ inputs.mark_latest }}" == "true" ]]; then
-            DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:latest"
-            GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:latest"
+            # DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:latest"
+            # GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:latest"
+            DOCKERHUB_TAGS="${DOCKERHUB_TAGS},${{ secrets.DOCKERHUB_USERNAME }}/easyws:latest"
+            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ github.repository_owner }}/easyws:latest"
           fi
 
           # Add unstable tags if requested
           if [[ "${{ inputs.mark_unstable }}" == "true" ]]; then
-            DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:unstable"
-            GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:unstable"
+            # DOCKERHUB_TAGS="${DOCKERHUB_TAGS},easytier/easytier:unstable"
+            # GHCR_TAGS="${GHCR_TAGS},ghcr.io/easytier/easytier:unstable"
+            DOCKERHUB_TAGS="${DOCKERHUB_TAGS},${{ secrets.DOCKERHUB_USERNAME }}/easyws:unstable"
+            GHCR_TAGS="${GHCR_TAGS},ghcr.io/${{ github.repository_owner }}/easyws:unstable"
           fi
 
           # Combine all tags
