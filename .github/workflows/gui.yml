@@ -1,12 +1,12 @@
 name: EasyTier GUI
 
 on:
+  push:
+    branches: ["develop", "main", "releases/**"]
+  pull_request:
+    branches: ["develop", "main"]
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
-  # push:
-  #   branches: ["develop", "main", "releases/**"]
-  # pull_request:
-  #   branches: ["develop", "main"]
-  #   types: [opened, synchronize, reopened, ready_for_review]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -46,32 +46,32 @@ jobs:
             OS: ubuntu-24.04
             GUI_TARGET: x86_64-unknown-linux-gnu
             ARTIFACT_NAME: linux-x86_64
-          - TARGET: aarch64-unknown-linux-musl
-            OS: ubuntu-24.04-arm
-            GUI_TARGET: aarch64-unknown-linux-gnu
-            ARTIFACT_NAME: linux-aarch64
-
-          - TARGET: x86_64-apple-darwin
-            OS: macos-latest
-            GUI_TARGET: x86_64-apple-darwin
-            ARTIFACT_NAME: macos-x86_64
-          - TARGET: aarch64-apple-darwin
-            OS: macos-latest
-            GUI_TARGET: aarch64-apple-darwin
-            ARTIFACT_NAME: macos-aarch64
-
+#          - TARGET: aarch64-unknown-linux-musl
+#            OS: ubuntu-24.04-arm
+#            GUI_TARGET: aarch64-unknown-linux-gnu
+#            ARTIFACT_NAME: linux-aarch64
+#
+#          - TARGET: x86_64-apple-darwin
+#            OS: macos-latest
+#            GUI_TARGET: x86_64-apple-darwin
+#            ARTIFACT_NAME: macos-x86_64
+#          - TARGET: aarch64-apple-darwin
+#            OS: macos-latest
+#            GUI_TARGET: aarch64-apple-darwin
+#            ARTIFACT_NAME: macos-aarch64
+#
           - TARGET: x86_64-pc-windows-msvc
             OS: windows-latest
             GUI_TARGET: x86_64-pc-windows-msvc
             ARTIFACT_NAME: windows-x86_64
-          - TARGET: i686-pc-windows-msvc
-            OS: windows-latest
-            GUI_TARGET: i686-pc-windows-msvc
-            ARTIFACT_NAME: windows-i686
-          - TARGET: aarch64-pc-windows-msvc
-            OS: windows-11-arm
-            GUI_TARGET: aarch64-pc-windows-msvc
-            ARTIFACT_NAME: windows-arm64
+#          - TARGET: i686-pc-windows-msvc
+#            OS: windows-latest
+#            GUI_TARGET: i686-pc-windows-msvc
+#            ARTIFACT_NAME: windows-i686
+#          - TARGET: aarch64-pc-windows-msvc
+#            OS: windows-11-arm
+#            GUI_TARGET: aarch64-pc-windows-msvc
+#            ARTIFACT_NAME: windows-arm64
 
     runs-on: ${{ matrix.OS }}
     env:
@@ -79,7 +79,7 @@ jobs:
       TARGET: ${{ matrix.TARGET }}
       OS: ${{ matrix.OS }}
       GUI_TARGET: ${{ matrix.GUI_TARGET }}
-      OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
+#      OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'    
     steps:
